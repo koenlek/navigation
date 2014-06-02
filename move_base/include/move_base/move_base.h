@@ -59,6 +59,12 @@
 #include <dynamic_reconfigure/server.h>
 #include "move_base/MoveBaseConfig.h"
 
+#if BENCHMARKING
+#include <ecl/time/stopwatch.hpp>
+#include <ecl/time/cpuwatch.hpp>
+#include <ecl/time/time_data.hpp>
+#endif
+
 namespace move_base {
   //typedefs to help us out with the action server so that we don't hace to type so much
   typedef actionlib::SimpleActionServer<move_base_msgs::MoveBaseAction> MoveBaseActionServer;
@@ -101,6 +107,14 @@ namespace move_base {
        * @return True if processing of the goal is done, false otherwise
        */
       bool executeCycle(geometry_msgs::PoseStamped& goal, std::vector<geometry_msgs::PoseStamped>& global_plan);
+
+	  #if BENCHMARKING
+        ecl::CpuWatch cpuwatch_;
+        ecl::StopWatch stopwatch_;
+        bool benchmark_inprogress_;
+        ros::Subscriber move_base_global_plan_sub_;
+        void moveBaseGlobalPlanCB(const nav_msgs::PathConstPtr& path);
+	  #endif
 
     private:
       /**

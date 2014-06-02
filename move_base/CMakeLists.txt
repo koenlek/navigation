@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(move_base)
 
+add_definitions(-DBENCHMARKING=1) 
+
 find_package(catkin REQUIRED
     COMPONENTS
-        cmake_modules
+        #cmake_modules
         roscpp
         pluginlib
         actionlib
@@ -11,6 +13,7 @@ find_package(catkin REQUIRED
         message_generation
         nav_core
         tf
+	ecl_time #for benchmarks
 )
 find_package(Eigen REQUIRED)
 add_definitions(${EIGEN_DEFINITIONS})

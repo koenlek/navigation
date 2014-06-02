@@ -3,7 +3,7 @@ project(costmap_2d)
 
 find_package(catkin REQUIRED
         COMPONENTS
-            cmake_modules
+            #cmake_modules
             dynamic_reconfigure
             geometry_msgs
             laser_geometry

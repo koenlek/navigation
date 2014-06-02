@@ -55,10 +55,15 @@ namespace move_base {
     planner_plan_(NULL), latest_plan_(NULL), controller_plan_(NULL),
     runPlanner_(false), setup_(false), p_freq_change_(false), c_freq_change_(false), new_global_plan_(false) {
 
-    as_ = new MoveBaseActionServer(ros::NodeHandle(), "move_base", boost::bind(&MoveBase::executeCb, this, _1), false);
+	as_ = new MoveBaseActionServer(ros::NodeHandle(), "move_base", boost::bind(&MoveBase::executeCb, this, _1), false);
 
     ros::NodeHandle private_nh("~");
     ros::NodeHandle nh;
+
+	#if BENCHMARKING
+    	move_base_global_plan_sub_ = nh.subscribe("/move_base/NavfnROS/plan", 1, &MoveBase::moveBaseGlobalPlanCB, this);
+    	benchmark_inprogress_ = false;
+	#endif
 
     recovery_trigger_ = PLANNING_R;
 
@@ -641,9 +646,29 @@ namespace move_base {
     }
   }
 
+	#if BENCHMARKING
+	void MoveBase::moveBaseGlobalPlanCB(const nav_msgs::PathConstPtr & path) {
+		if(path->poses.size() > 0 && benchmark_inprogress_){
+			ecl::TimeStamp time;
+			time = stopwatch_.split();
+			ROS_INFO_STREAM("It took: " << time << "[s] from receiving move_base goal (/move_base/goal) to receiving a global metric path (/move_base/NavfnROS/plan)");
+			benchmark_inprogress_ = false;
+		}
+	}
+	#endif
+
   void MoveBase::executeCb(const move_base_msgs::MoveBaseGoalConstPtr& move_base_goal)
   {
-    if(!isQuaternionValid(move_base_goal->target_pose.pose.orientation)){
+	#if BENCHMARKING
+		benchmark_inprogress_ = true;
+		ecl::TimeStamp time;
+		ecl::Duration duration;
+		cpuwatch_.restart(); //sets current `lap` to zero.
+		stopwatch_.restart(); //sets current `lap` to zero.
+	#endif
+
+
+	if(!isQuaternionValid(move_base_goal->target_pose.pose.orientation)){
       as_->setAborted(move_base_msgs::MoveBaseResult(), "Aborting on goal because it was sent with an invalid quaternion");
       return;
     }
