@@ -37,6 +37,10 @@
 #ifndef NAV_MOVE_BASE_ACTION_H_
 #define NAV_MOVE_BASE_ACTION_H_
 
+#ifndef BENCHMARKING
+#define BENCHMARKING 0
+#endif
+
 #include <vector>
 #include <string>
 
