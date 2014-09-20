@@ -5,7 +5,7 @@ add_definitions(-DBENCHMARKING=1)
 
 find_package(catkin REQUIRED
     COMPONENTS
-        #cmake_modules
+        cmake_modules
         roscpp
         pluginlib
         actionlib

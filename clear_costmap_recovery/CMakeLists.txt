@@ -3,7 +3,7 @@ project(clear_costmap_recovery)
 
 find_package(catkin REQUIRED
         COMPONENTS
-            #cmake_modules
+            cmake_modules
             costmap_2d
             nav_core
             pluginlib
