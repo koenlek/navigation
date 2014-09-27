@@ -113,7 +113,7 @@ namespace move_base {
       bool executeCycle(geometry_msgs::PoseStamped& goal, std::vector<geometry_msgs::PoseStamped>& global_plan);
 
 	  #if BENCHMARKING
-        ecl::CpuWatch cpuwatch_;
+        ecl::CpuWatch cpuwatch_, cpuwatch_global_path_calc_;
         ecl::StopWatch stopwatch_;
         bool benchmark_inprogress_;
         ros::Subscriber move_base_global_plan_sub_;
